@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE hibernate-configuration PUBLIC  
+         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"  
+         "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">  
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/jgs_airlines?useTimezone=true&amp;serverTimezone=UTC</property>
+        <property name="connection.username">jgsairline</property>
+        <property name="connection.password">jgsairline</property>
+        
+        <property name="c3po.min_size">5</property>
+        <property name="c3po.max_size">20</property>
+        <property name="c3po.timeout">300</property>
+        <property name="c3po.max_statements">50</property>
+        <property name="c3po.idle_test_pediod">3000</property>
+        
+        <property name="hbm2ddl.auto">update</property>
+        
+        <mapping class="models.Cliente"/>
+        <mapping class="models.Funcionario"/>
+        <mapping class="models.Passagem"/>
+        <mapping class="models.PessoaFisica"/>
+        <mapping class="models.Voo"/>
+        <mapping class="models.Aviao"/>
+    </session-factory>
+</hibernate-configuration>
