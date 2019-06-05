@@ -23,7 +23,7 @@
         <mapping class="models.Funcionario"/>
         <mapping class="models.Passagem"/>
         <mapping class="models.PessoaFisica"/>
-        <mapping class="models.Voo"/>
+		<mapping class="models.Voo"/>
         <mapping class="models.Aviao"/>
     </session-factory>
 </hibernate-configuration>

@@ -36,14 +36,14 @@ class CadastrarFuncionario extends JFrame {
 			interfaceFunc(f);
 		}catch (Exception e) {
 			JOptionPane.showMessageDialog(new JFrame(),
-				    "Erro ao buscar o funcionário",
+				    "Erro ao buscar o funcionï¿½rio",
 				    "Erro",
 				    JOptionPane.ERROR_MESSAGE);
 		}
 		int cargo = 0;
 	}
 	private void interfaceFunc(Funcionario f) {
-		
+		boolean cadastro = f.getNome().equals("");
 		if(lista.size() != 0) {
 			lastID = lista.get(lista.size() - 1).getId();
 		}else {
@@ -51,7 +51,7 @@ class CadastrarFuncionario extends JFrame {
 		}
 		
 		String[] cargo = {"Piloto", "Copiloto"};
-		setTitle("Cadastrar Funcionario");
+		setTitle("Formulario Funcionario");
 	    setSize(450, 600);
 	    JPanel panelSouth = new JPanel();
 	    JPanel panel = new JPanel();
@@ -60,7 +60,7 @@ class CadastrarFuncionario extends JFrame {
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(10, 10, 10, 10);
         
-        JLabel lblId = new JLabel("ID do Funcionario: " + (lastID + 1));
+        JLabel lblId = new JLabel("ID do Funcionario: " + (cadastro ? (lastID + 1):f.getId()));
         JLabel lblNome = new JLabel("Nome do Funcionario: ");
         JTextField txtNome = new JTextField(20);
         txtNome.setText(f.getNome());
@@ -70,7 +70,7 @@ class CadastrarFuncionario extends JFrame {
         JLabel lblRg = new JLabel("RG do Funcionario: ");
         JTextField txtRg = new JTextField(20);
         txtRg.setText(f.getRg());
-        JButton btnCadastrar = new JButton((f.getNome()!=""?"Editar":"Cadastrar"));
+        JButton btnCadastrar = new JButton((cadastro?"Cadastrar":"Editar"));
         
         constraints.gridx = 0;
         constraints.gridy = 0;     
@@ -97,25 +97,28 @@ class CadastrarFuncionario extends JFrame {
         panelSouth.add(btnCadastrar);
 		btnCadastrar.addActionListener(e -> {
 			if (!txtNome.getText().isEmpty() && !txtRg.getText().isEmpty() && cboCargo.getSelectedItem() != null) {
-				if (f.getNome().equals("")) {
+				try {
 					f.setNome(txtNome.getText());
 					f.setRg(txtRg.getText());
 					f.setCargoFuncionario(cargo[cboCargo.getSelectedIndex()]);
-					Crud.salvar(f);
-					lastID++;
+					if (cadastro == true) {
+						Crud.salvar(f);
+						lastID++;
+					} else {
+						Crud.atualizar(f);
+					}
 					lblId.setText("ID do Funcionario: " + lastID);
-				} else {
-					f.setNome(txtNome.getText());
-					f.setRg(txtRg.getText());
-					Crud.atualizar(f);
+					txtNome.setText("");
+					txtRg.setText("");
+					cboCargo.setSelectedIndex(0);
+					f.setNome("");
+					f.setCargoFuncionario("");
+					f.setRg("");
+					JOptionPane.showMessageDialog(new JFrame(), "OperaÃ§Ã£o concluida com sucesso");
+				}catch(Exception ex) {
+					JOptionPane.showMessageDialog(new JFrame(), ex.getMessage(), "Erro",
+							JOptionPane.WARNING_MESSAGE);
 				}
-				txtNome.setText("");
-				txtRg.setText("");
-				cboCargo.setSelectedIndex(0);
-				f.setNome("");
-				f.setCargoFuncionario("");
-				f.setRg("");
-				JOptionPane.showMessageDialog(new JFrame(), "Operação concluida com sucesso");
 			} else {
 				JOptionPane.showMessageDialog(new JFrame(), "Erro Durante a Operacao", "Aviso",
 						JOptionPane.WARNING_MESSAGE);

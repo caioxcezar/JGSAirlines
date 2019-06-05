@@ -23,7 +23,25 @@ class CadastrarCliente extends JFrame {
 	private List<Cliente> lista = Crud.listarCliente();
 	private int lastID;
 	public CadastrarCliente() {
-		
+		Cliente c = new Cliente();
+		c.setNome("");
+		c.setCartaoFidelidade(0);
+		c.setRg("");
+		interfaceCliente(c);
+	}
+	public CadastrarCliente(int id) {
+		try {
+			Cliente c = (Cliente)Crud.buscar(id, Cliente.class);
+			interfaceCliente(c);
+		}catch (Exception e) {
+			JOptionPane.showMessageDialog(new JFrame(),
+				    "Erro ao buscar o funcionário",
+				    "Erro",
+				    JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	public void interfaceCliente(Cliente cli) {
+		boolean cadastro = cli.getNome().equals("");
 		if(lista.size() != 0) {
 			lastID = lista.get(lista.size() - 1).getId();
 		}else {
@@ -31,7 +49,7 @@ class CadastrarCliente extends JFrame {
 		}
 		
 		lastID = Crud.listarCliente().size();
-		setTitle("Cadastrar Cliente");
+		setTitle("Formulario Cliente");
 	    setSize(500, 600);
 	    JPanel panelSouth = new JPanel();
 	    JPanel panel = new JPanel();
@@ -40,14 +58,17 @@ class CadastrarCliente extends JFrame {
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(10, 10, 10, 10);
         
-        JLabel lblId = new JLabel("ID do Cliente: " + (lastID + 1));
+        JLabel lblId = new JLabel("ID do Cliente: " + (cadastro ? (lastID + 1) : cli.getId()));
         JLabel lblNome = new JLabel("Nome do Cliente: ");
         JTextField txtNome = new JTextField(20);
+        txtNome.setText(cli.getNome());
         JLabel lblRg = new JLabel("RG do Cliente: ");
         JTextField txtRg = new JTextField(20);
+        txtRg.setText(cli.getRg());
         JLabel lblFidelidade = new JLabel("Cartão Fidelidade do Cliente: ");
         JTextField txtFidelidade = new JTextField(20);
-        JButton btnCadastrar = new JButton("Cadastrar");
+        txtFidelidade.setText(cli.getCartaoFidelidade() + "");
+        JButton btnCadastrar = new JButton((cadastro ? "Cadastrar" : "Editar"));
         
         constraints.gridx = 0;
         constraints.gridy = 0;     
@@ -75,20 +96,31 @@ class CadastrarCliente extends JFrame {
         
         btnCadastrar.addActionListener(e -> {
         	if(!txtFidelidade.getText().isEmpty() && !txtNome.getText().isEmpty() && !txtRg.getText().isEmpty()) {
-            	int fidelidade = TextNumber.textInteger(txtFidelidade.getText());
-            	if(fidelidade!=-1) {
-                	Cliente c = new Cliente();
-                	c.setNome(txtNome.getText());
-                	c.setCartaoFidelidade(fidelidade);
-                	c.setRg(txtRg.getText());
-                	Crud.salvar(c);
-                	lastID++;
-                	lblId.setText("ID do Cliente: " + lastID);
-                	txtNome.setText("");
-                	txtRg.setText("");
-                	txtFidelidade.setText("");
-                	JOptionPane.showMessageDialog(new JFrame(), "Cliente cadastrado");
-            	}
+            	try {
+            		int fidelidade = TextNumber.textInteger(txtFidelidade.getText());
+                	if(fidelidade!=-1) {
+                		
+                    	cli.setNome(txtNome.getText());
+                    	cli.setCartaoFidelidade(fidelidade);
+                    	cli.setRg(txtRg.getText());
+                		if(cadastro == true) {
+                        	Crud.salvar(cli);
+                        	lastID++;
+                		}else {
+                			Crud.atualizar(cli);
+                		}
+                    	lblId.setText("ID do Cliente: " + lastID);
+                    	txtNome.setText("");
+                    	txtRg.setText("");
+                    	txtFidelidade.setText("");
+                    	JOptionPane.showMessageDialog(new JFrame(), "operação realizada com sucesso");
+                	}
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(new JFrame(),
+	    				    e2.getMessage(),
+	    				    "Erro",
+	    				    JOptionPane.WARNING_MESSAGE);
+				}
         	}else {
     			JOptionPane.showMessageDialog(new JFrame(),
     				    "Erro Durante a Operacao",

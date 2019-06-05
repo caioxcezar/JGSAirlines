@@ -23,14 +23,28 @@ class CadastrarAviao extends JFrame {
 	private List<Aviao> lista = Crud.listarAviao();
 	private int lastID;
 	public CadastrarAviao() {
-		
+		Aviao av = new Aviao();
+		av.setCapacidade(0);
+		av.setModelo("");
+		InterfaceAviao(av);
+	}
+	public CadastrarAviao(int id) {
+		try {
+			Aviao av = (Aviao) Crud.buscar(id, Aviao.class);
+			InterfaceAviao(av);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	public void InterfaceAviao(Aviao av) {
+		boolean cadastro = (av.getCapacidade() == 0 ? true : false);
 		if(lista.size() != 0) {
 			lastID = lista.get(lista.size() - 1).getId();
 		}else {
 			lastID = 0;
 		}
 		
-		setTitle("Cadastrar Aviao");
+		setTitle("Formulario Avião");
 	    setSize(400, 600);
 	    
 	    JPanel panel = new JPanel();
@@ -40,12 +54,14 @@ class CadastrarAviao extends JFrame {
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(10, 10, 10, 10);
         
-	    JLabel lblId = new JLabel("ID do Aviao: " + (lastID + 1));
+	    JLabel lblId = new JLabel("ID do Aviao: " + (cadastro ? (lastID + 1) : av.getId()));
 	    JLabel lblModelo = new JLabel("Modelo: ");
 	    JTextField txtModelo = new JTextField(20);
+	    txtModelo.setText(av.getModelo());
 	    JLabel lblCapacidade = new JLabel("Capacidade: ");
 	    JTextField txtCapacidade = new JTextField(20);
-	    JButton btnCadastro = new JButton("Cadastrar");
+	    txtCapacidade.setText(av.getCapacidade() + "");
+	    JButton btnCadastro = new JButton((cadastro ? "Cadastrar" : "Editar"));
 	    
 	    constraints.gridx = 0;
 	    constraints.gridy = 0;
@@ -70,17 +86,22 @@ class CadastrarAviao extends JFrame {
 			int capacidade = TextNumber.textInteger(txtCapacidade.getText());
 			if (capacidade > 0 && txtModelo.getText() != "") {
 				try {
-					Aviao a = new Aviao();
-					a.setCapacidade(capacidade);
-					a.setModelo(txtModelo.getText());
-					Crud.salvar(a);
+					av.setCapacidade(capacidade);
+					av.setModelo(txtModelo.getText());
+					if (cadastro) {
+						Crud.salvar(av);
+						lastID++;
+					}else {
+						Crud.atualizar(av);
+					}
+					
 					JOptionPane.showMessageDialog(new JFrame(), "Aviao cadastrado");
-					lastID++;
+					
 					lblId.setText("ID do Aviao: " + lastID);
 					txtModelo.setText("");
 					txtCapacidade.setText("");
 				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(new JFrame(), "Erro ao Cadastrar Aviao", "Aviso",
+					JOptionPane.showMessageDialog(new JFrame(), ex.getMessage(), "Aviso",
 							JOptionPane.WARNING_MESSAGE);
 				}
 			} else {

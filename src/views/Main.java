@@ -18,8 +18,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import org.hibernate.Session;
-
 import models.Aviao;
 import models.Cliente;
 import models.Voo;
@@ -29,24 +27,9 @@ public class Main {
     private static DefaultTableModel tmCli;
     private static DefaultTableModel tmAv;
     private static DefaultTableModel tmVoo;
+    private static final JFrame frame = new JFrame("JGS Airlines");
     public static void main(String[] args) {    	
-		Session sessao = null;
-		try {
-			sessao = utils.DBConnector.getSessionFactory().openSession();
-			JOptionPane.showMessageDialog(new JFrame(),
-				    "Banco de dados conectado",
-				    "DBConection",
-				    JOptionPane.INFORMATION_MESSAGE);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(new JFrame(),
-				    "Erro ao conectar ao banco de dados",
-				    "Aviso",
-				    JOptionPane.WARNING_MESSAGE);
-		} finally {
-			sessao.close();
-		}
 		
-        JFrame frame = new JFrame("JGS Airlines");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
@@ -163,28 +146,44 @@ public class Main {
         });
         voo.add(consultar);
 
-        JMenuItem piloto = new JMenuItem(new AbstractAction("Atualizar informacoes do piloto", new ImageIcon("./resources/pilot.png")) {
+        JMenuItem funcionario = new JMenuItem(new AbstractAction("Atualizar informacoes dos funcionarios", new ImageIcon("./resources/pilot.png")) {
 			private static final long serialVersionUID = -3012848524821010412L;
 			public void actionPerformed(ActionEvent ae) {
-                AtualizarPiloto ap = new AtualizarPiloto();
+                AtualizarFuncionario ap = new AtualizarFuncionario();
             }
         });
-        voo.add(piloto);
+        voo.add(funcionario);
 
-        JMenuItem copiloto = new JMenuItem(new AbstractAction("Atualizar informacoes do copiloto", new ImageIcon("./resources/pilot.png")) {
+        JMenuItem aviao = new JMenuItem(new AbstractAction("Atualizar informacoes dos AviÃµes", new ImageIcon("./resources/plane.png")) {
+			private static final long serialVersionUID = -3012848524821010412L;
+			public void actionPerformed(ActionEvent ae) {
+                AtualizarAviao ap = new AtualizarAviao();
+            }
+        });
+        voo.add(aviao);
+        
+        JMenuItem cliente = new JMenuItem(new AbstractAction("Atualizar informacoes do cliente", new ImageIcon("./resources/client.png")) {
 			private static final long serialVersionUID = 8927384498719241005L;
 			public void actionPerformed(ActionEvent ae) {
-                AtualizarCopiloto ac = new AtualizarCopiloto();
+                AtualizarCliente ac = new AtualizarCliente();
             }
         });
-        voo.add(copiloto);
+        voo.add(cliente);
+        
+        JMenuItem AtualizarVoo = new JMenuItem(new AbstractAction("Atualizar informacoes do voo", new ImageIcon("./resources/plane.png")) {
+			private static final long serialVersionUID = 8927384498719241005L;
+			public void actionPerformed(ActionEvent ae) {
+                AtualizarVoo ac = new AtualizarVoo();
+            }
+        });
+        voo.add(AtualizarVoo);
         
         JLabel lblCli = new JLabel("Lista de Clientes Cadastrados ");
         JLabel lblAv = new JLabel("Lista de Avioes Cadastrados");
         JLabel lblVoo = new JLabel("Lista de Voos Cadastrados");
         String[] colunaCli = {"ID", "Nome", "Cartao Fidelidade", "RG"};
         String[] colunaAv = {"ID", "Modelo", "Capacidade"};
-        String[] colunaVoo = {"ID", "Avião", "Piloto", "Copiloto", "Preco", "Origem", "Destino"};
+        String[] colunaVoo = {"ID", "AviÃ£o", "Piloto", "Copiloto", "Preco", "Origem", "Destino", "Data"};
 
         tmCli = new DefaultTableModel(colunaCli, 0);
         tmAv = new DefaultTableModel(colunaAv, 0);
@@ -230,23 +229,20 @@ public class Main {
         frame.getContentPane().add(BorderLayout.SOUTH, refresh);
         frame.setVisible(true);
     }
-    //se tiver linhas nas tabelas ele limpa, se não ele preenche com o que estiver no banco de dados
+    //se tiver linhas nas tabelas ele limpa, se nï¿½o ele preenche com o que estiver no banco de dados
     public static void updateTable() {
-		if (tmCli.getRowCount() > 0) {
-			for (int i = 0; i <= tmCli.getRowCount(); i++) {
-				tmCli.removeRow(i);
+    	frame.setEnabled(false);
+    	try {
+			while(tmCli.getRowCount() > 0) {
+				tmCli.removeRow(0);
 			}
-		}
-		if (tmAv.getRowCount() > 0) {
-			for (int i = 0; i <= tmAv.getRowCount(); i++) {
-				tmAv.removeRow(i);
+			while(tmAv.getRowCount() > 0) {
+				tmAv.removeRow(0);
 			}
-		}
-		if (tmVoo.getRowCount() > 0) {
-			for (int i = 0; i <= tmVoo.getRowCount(); i++) {
-				tmVoo.removeRow(i);
+			while(tmVoo.getRowCount() > 0) {
+				tmVoo.removeRow(0);
 			}
-		}
+		
     	for(Cliente c : Crud.listarCliente()) {
     		String[] s = {c.getId() + "", c.getNome(), c.getCartaoFidelidade() + "", c.getRg()};
     		tmCli.addRow(s);
@@ -262,8 +258,14 @@ public class Main {
     				v.getCopiloto().getNome(), 
     				"R$" + v.getPrecoPassagem(), 
     				v.getOrigem(), 
-    				v.getDestino()};
+    				v.getDestino(), 
+    				(v.getData() == null ? "" : v.getData().toString())};
     		tmVoo.addRow(s);
     	}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Erro ao Atualizar",
+					JOptionPane.WARNING_MESSAGE);
+		}
+    	frame.setEnabled(true);
     }
 }

@@ -2,9 +2,10 @@ package utils;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import javax.persistence.criteria.*;
+
+import org.hibernate.*;
+import org.hibernate.query.Query;
 
 import models.*;
 
@@ -155,10 +156,17 @@ public class Crud {
 		Session sessao = null;
 		try {
 			sessao = DBConnector.getSessionFactory().openSession();
-			sessao.beginTransaction();
-			List<Voo> lista = sessao.createQuery("from Voo", Voo.class).list();
-			sessao.getTransaction().commit();
-			return lista;
+//			sessao.beginTransaction();
+//			List<Voo> lista = sessao.createQuery("from Voo", Voo.class).list();
+//			sessao.getTransaction().commit();
+//			return lista;
+			CriteriaBuilder cb = sessao.getCriteriaBuilder();
+		    CriteriaQuery<Voo> cq = cb.createQuery(Voo.class);
+		    Root<Voo> rootEntry = cq.from(Voo.class);
+		    CriteriaQuery<Voo> all = cq.select(rootEntry);
+		 
+		    Query<Voo> allQuery = sessao.createQuery(all);
+		    return allQuery.getResultList();
 		} finally {
 			try {
 				sessao.close();

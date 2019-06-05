@@ -1,8 +1,13 @@
 package models;
 
+import java.sql.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -10,32 +15,44 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "voo")
 public class Voo {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 	private	int id;
 	@OneToOne
-	@JoinColumn(name="aviao")
+	@JoinColumn(name="aviao", nullable = false)
 	private Aviao aviao;
 	@OneToOne
-	@JoinColumn(name = "piloto")
+	@OnDelete( action = OnDeleteAction.CASCADE )
+	@JoinColumn(name = "piloto", nullable = false)
 	private	Funcionario piloto;
 	@OneToOne
-	@JoinColumn(name = "copiloto")
+	@OnDelete( action = OnDeleteAction.CASCADE )
+	@JoinColumn(name = "copiloto", nullable = false)
 	private	Funcionario copiloto;
-	@Column(name = "preco_passagem")
+	@Column(name = "preco_passagem", nullable = false)
 	private double precoPassagem;
-	@Column(name = "origem")
+	@Column(name = "origem", nullable = false)
 	private	String origem;
-	@Column(name = "destino")
+	@Column(name = "destino", nullable = false)
 	private	String  destino;
-	@OneToMany
-	@JoinColumn(name= "passagem")
-	@OrderColumn(name="id")
+	@Column(name="data", nullable = false)
+	private Date data;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "voo")
+	@OrderColumn(name = "id")
 	private Passagem[] passagens;
+	public Date getData() {
+		return data;
+	}
+	public void setData(Date data) {
+		this.data = data;
+	}
 	public int getId() {
 		return id;
 	}

@@ -2,18 +2,19 @@ package models;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 abstract class PessoaFisica {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	@Column(name = "nome")
+	@Column(name = "nome", nullable = false)
 	private String nome;
-	@Column(name = "rg")
+	@Column(name = "rg", nullable = false)
 	private String rg;
 	
 	public int getId() {

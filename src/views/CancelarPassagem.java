@@ -74,6 +74,9 @@ public class CancelarPassagem extends JFrame {
         
         btnBuscar.addActionListener(e->{
         	if(cboVoo.getSelectedItem() != null) {
+        		while(tmAssento.getRowCount() > 0) {
+        			tmAssento.removeRow(0);
+    			}
         		//add passagens na tabela
         		for(Passagem passagem : passagens) {
         			if(passagem.getVoo().getId() == voos.get(cboVoo.getSelectedIndex()).getId()) {
@@ -102,10 +105,8 @@ public class CancelarPassagem extends JFrame {
         				}
         			}
         			//limpa a tabela
-        			if (tmAssento.getRowCount() > 0) {
-        				for (int i = 0; i <= tmAssento.getRowCount(); i++) {
-        					tmAssento.removeRow(i);
-        				}
+            		while(tmAssento.getRowCount() > 0) {
+            			tmAssento.removeRow(0);
         			}
         			//add as coisas de novo na tabela
             		for(Passagem passagem : passagens) {
