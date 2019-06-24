@@ -1,13 +1,12 @@
 package views;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import models.Cliente;
 import models.Passagem;
 import models.Voo;
 import utils.Crud;
@@ -25,10 +24,10 @@ public class ConsultarLugaresDisp extends JFrame {
         JTable tabLugares = new JTable(tmLugares);
         JScrollPane barLugares = new JScrollPane(tabLugares);
         for(Voo v : voos) {
-        	ArrayList<Passagem> passagens = new ArrayList<Passagem>();
-        	for(int i = 0; i < v.getPassagens().length; i++) {
-        		if(v.getPassagens()[i] != null) {
-        			passagens.add(v.getPassagens()[i]);
+        	List<Passagem> passagens = v.getPassagens().stream().collect(Collectors.toList());
+        	for(int i = 0; i < passagens.size(); i++) {
+        		if(passagens.get(i) == null) {
+        			passagens.remove(i);
         		}
         	}
         	String[] linha = {

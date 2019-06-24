@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,17 +20,11 @@ public class Cliente extends PessoaFisica {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "cliente")
 	@OnDelete( action = OnDeleteAction.CASCADE )
 	@OrderColumn(name = "id")
-	private Passagem[] passagens;
+	private Set<Passagem> passagens;
 	public int getCartaoFidelidade() {
 		return cartaoFidelidade;
 	}
 	public void setCartaoFidelidade(int cartaoFidelidade) {
 		this.cartaoFidelidade = cartaoFidelidade;
-	}
-	public Passagem[] getPassagens() {
-		return passagens;
-	}
-	public void setPassagens(Passagem[] passagens) {
-		this.passagens = passagens;
 	}
 }

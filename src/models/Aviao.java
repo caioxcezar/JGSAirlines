@@ -1,5 +1,4 @@
 package models;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,7 +25,7 @@ public class Aviao {
 	@ManyToOne
 	@OnDelete( action = OnDeleteAction.CASCADE )
 	@JoinColumn(name = "voo")
-	private Voo[] voo;
+	private Voo voo;
 	public int getId() {
 		return id;
 	}
@@ -45,11 +44,10 @@ public class Aviao {
 	public void setCapacidade(int capacidade) {
 		this.capacidade = capacidade;
 	}
-	public Voo[] getVoo() {
+	public Voo getVoo() {
 		return voo;
 	}
-	public void setVoo(Voo[] voo) {
+	public void setVoo(Voo voo) {
 		this.voo = voo;
 	}
-	
 }

@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Date;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,7 +47,7 @@ public class Voo {
 	private Date data;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "voo")
 	@OrderColumn(name = "id")
-	private Passagem[] passagens;
+	private Set<Passagem> passagens;
 	public Date getData() {
 		return data;
 	}
@@ -95,10 +96,10 @@ public class Voo {
 	public void setDestino(String destino) {
 		this.destino = destino;
 	}
-	public Passagem[] getPassagens() {
+	public Set<Passagem> getPassagens() {
 		return passagens;
 	}
-	public void setPassagens(Passagem[] passagens) {
+	public void setPassagens(Set<Passagem> passagens) {
 		this.passagens = passagens;
 	}
 }

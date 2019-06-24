@@ -1,9 +1,6 @@
 package views;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -28,10 +25,10 @@ public class RelatorioFaturamento extends JFrame {
         JTable tabFaturamento = new JTable(tmFaturamento);
         JScrollPane barFaturamento = new JScrollPane(tabFaturamento);
         for(Voo v : voos) {
-        	ArrayList<Passagem> passagens = new ArrayList<Passagem>();
-        	for(int i = 0; i < v.getPassagens().length; i++) {
-        		if(v.getPassagens()[i] != null) {
-        			passagens.add(v.getPassagens()[i]);
+        	List<Passagem> passagens = v.getPassagens().stream().collect(Collectors.toList());
+        	for(int i = 0; i < passagens.size(); i++) {
+        		if(passagens.get(i) == null) {
+        			passagens.remove(i);
         		}
         	}
         	String[] linha = {
